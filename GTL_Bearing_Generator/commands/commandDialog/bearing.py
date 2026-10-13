@@ -162,5 +162,38 @@ def make_bearing(OuterRing_OuterDiameter, OuterRing_Width, Height, ODcorner, Inn
     else:
         chamfer.name = 'Inner Ring Chamfer'
 
-    # Ya creado el rodamiento interno y externo
+    # Plastico interno
+    # Creación de objeto y calculo de dimensiones
+    ocurrenciaPlastico = rodamiento.occurrences.addNewComponent(
+        adsk.core.Matrix3D.create()
+    )
+    ocurrenciaPlastico.component.name = 'Plastic_covering'
+    OuterPlastic = OuterRing_OuterDiameter - 2 * OuterRing_Width
+    InnerPlastic = InnerRing_Bore + 2 * InnerRing_Width
+
+    # Crear sketch en el plastico
+    sketchPlastico = ocurrenciaPlastico.component.sketches.add(
+        ocurrenciaPlastico.component.xYConstructionPlane)
+
+    # Crear circulo exterior del plastico
+    circles3 = sketchPlastico.sketchCurves.sketchCircles
+    circuloExteriorPlastico = circles3.addByCenterRadius(
+        adsk.core.Point3D.create(0, 0, 0),  # Centro del circulo
+        OuterPlastic / 2                   # Radio del circulo
+    )
+
+    #Crear cirulo interior del plastico
+    circuloInteriorPlastico = circles3.addByCenterRadius(
+        adsk.core.Point3D.create(0, 0, 0),  # Centro del circulo
+        InnerPlastic / 2                   # Radio del circulo
+    )
+
+    # Extruir el plastico
+    prof = sketchPlastico.profiles.item(0)  # Obtener el perfil del sketch
+    extrudes = ocurrenciaPlastico.component.features.extrudeFeatures
+    extInput = extrudes.createInput(prof, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+    distance = adsk.core.ValueInput.createByReal(Height)  # Distancia de extrusión
+    extInput.setDistanceExtent(False, distance)
+    extrude = extrudes.add(extInput)
+
     
