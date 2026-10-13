@@ -60,7 +60,9 @@ def make_bearing(OuterRing_OuterDiameter, OuterRing_Width, Height, ODcorner, Inn
     extInput.setDistanceExtent(False, distance)
     extrude = extrudes.add(extInput)
     extrude.bodies.item(0).name = 'Outer Ring Body'  # Nombre del cuerpo extruido
+
     asignar_material(extrude.bodies.item(0), 'PrismMaterial-017', design, ui)
+    asignar_appearance(extrude.bodies.item(0), 'Prism-256', design, ui)
 
     # CHAMFER
     # Colección de aristas de la cara superior
@@ -130,7 +132,9 @@ def make_bearing(OuterRing_OuterDiameter, OuterRing_Width, Height, ODcorner, Inn
     extInput.setDistanceExtent(False, distance)
     extrude = extrudes.add(extInput)
     extrude.bodies.item(0).name = 'Inner Ring Body'  # Nombre del cuerpo extruido
+
     asignar_material(extrude.bodies.item(0), 'PrismMaterial-017', design, ui)
+    asignar_appearance(extrude.bodies.item(0), 'Prism-256', design, ui)
 
     # CHAMFER INNER RING
     # Colección de todas las aristas
@@ -201,7 +205,9 @@ def make_bearing(OuterRing_OuterDiameter, OuterRing_Width, Height, ODcorner, Inn
     extInput.setDistanceExtent(False, distance)
     extrude = extrudes.add(extInput)
     extrude.bodies.item(0).name = 'Rubber covering'
+
     asignar_material(extrude.bodies.item(0), 'PrismMaterial-059', design, ui)
+    asignar_appearance(extrude.bodies.item(0), 'Prism-115', design, ui)
 
   # Asignar material físico: goma
 
@@ -223,5 +229,30 @@ def asignar_material(body, material_id, design, ui):
 
     ui.messageBox(
         f"No se encontró el material con ID: {material_id}"
+    )
+    return False
+
+def asignar_appearance(body, appearance_id, design, ui):
+    app = adsk.core.Application.get()
+
+    for lib in app.materialLibraries:
+        for i in range(lib.appearances.count):
+            appearance = lib.appearances.item(i)
+
+            if appearance.id == appearance_id:
+                appearance_diseno = design.appearances.itemByName(
+                    appearance.name
+                )
+
+                if not appearance_diseno:
+                    appearance_diseno = design.appearances.addByCopy(
+                        appearance, appearance.name
+                    )
+
+                body.appearance = appearance_diseno
+                return True
+
+    ui.messageBox(
+        f"No se encontró la apariencia con ID: {appearance_id}"
     )
     return False
