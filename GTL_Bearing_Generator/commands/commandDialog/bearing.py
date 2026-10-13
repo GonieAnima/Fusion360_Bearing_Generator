@@ -60,7 +60,7 @@ def make_bearing(OuterRing_OuterDiameter, OuterRing_Width, Height, ODcorner, Inn
     extInput.setDistanceExtent(False, distance)
     extrude = extrudes.add(extInput)
     extrude.bodies.item(0).name = 'Outer Ring Body'  # Nombre del cuerpo extruido
-    asignar_material(extrude.bodies.item(0), 'PrismMaterial-059', design, ui)
+    asignar_material(extrude.bodies.item(0), 'PrismMaterial-017', design, ui)
 
     # CHAMFER
     # Colección de aristas de la cara superior
@@ -130,7 +130,7 @@ def make_bearing(OuterRing_OuterDiameter, OuterRing_Width, Height, ODcorner, Inn
     extInput.setDistanceExtent(False, distance)
     extrude = extrudes.add(extInput)
     extrude.bodies.item(0).name = 'Inner Ring Body'  # Nombre del cuerpo extruido
-    asignar_material(extrude.bodies.item(0), 'PrismMaterial-059', design, ui)
+    asignar_material(extrude.bodies.item(0), 'PrismMaterial-017', design, ui)
 
     # CHAMFER INNER RING
     # Colección de todas las aristas
