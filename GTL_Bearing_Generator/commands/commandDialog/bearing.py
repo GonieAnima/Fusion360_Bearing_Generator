@@ -60,6 +60,7 @@ def make_bearing(OuterRing_OuterDiameter, OuterRing_Width, Height, ODcorner, Inn
     extInput.setDistanceExtent(False, distance)
     extrude = extrudes.add(extInput)
     extrude.bodies.item(0).name = 'Outer Ring Body'  # Nombre del cuerpo extruido
+    asignar_material(extrude.bodies.item(0), 'PrismMaterial-059', design, ui)
 
     # CHAMFER
     # Colección de aristas de la cara superior
@@ -129,6 +130,7 @@ def make_bearing(OuterRing_OuterDiameter, OuterRing_Width, Height, ODcorner, Inn
     extInput.setDistanceExtent(False, distance)
     extrude = extrudes.add(extInput)
     extrude.bodies.item(0).name = 'Inner Ring Body'  # Nombre del cuerpo extruido
+    asignar_material(extrude.bodies.item(0), 'PrismMaterial-059', design, ui)
 
     # CHAMFER INNER RING
     # Colección de todas las aristas
@@ -162,6 +164,9 @@ def make_bearing(OuterRing_OuterDiameter, OuterRing_Width, Height, ODcorner, Inn
     else:
         chamfer.name = 'Inner Ring Chamfer'
 
+    ############################################################
+    # Crear un nuevo componente dentro del componente Rodamiento
+    ############################################################
     # Plastico interno
     # Creación de objeto y calculo de dimensiones
     ocurrenciaPlastico = rodamiento.occurrences.addNewComponent(
@@ -195,5 +200,28 @@ def make_bearing(OuterRing_OuterDiameter, OuterRing_Width, Height, ODcorner, Inn
     distance = adsk.core.ValueInput.createByReal(Height)  # Distancia de extrusión
     extInput.setDistanceExtent(False, distance)
     extrude = extrudes.add(extInput)
+    extrude.bodies.item(0).name = 'Rubber covering'
+    asignar_material(extrude.bodies.item(0), 'PrismMaterial-059', design, ui)
 
-    
+  # Asignar material físico: goma
+
+
+def asignar_material(body, material_id, design, ui):
+    for lib in adsk.core.Application.get().materialLibraries:
+        material = lib.materials.itemById(material_id)
+
+        if material:
+            material_diseno = design.materials.itemById(material_id)
+
+            if not material_diseno:
+                material_diseno = design.materials.addByCopy(
+                    material, material.name
+                )
+
+            body.material = material_diseno
+            return True
+
+    ui.messageBox(
+        f"No se encontró el material con ID: {material_id}"
+    )
+    return False
